@@ -1,0 +1,39 @@
+{
+    "type": "record",
+    "name": "agreement",
+    "fields": [
+        {
+            "name": "agreementSpecification",
+            "type": {
+                "type": "record",
+                "name": "AgreementSpecification",
+                "fields": [
+                    {
+                        "name": "validFor",
+                        "type": {
+                            "type": "record",
+                            "name": "validForAgreementSpecification",
+                            "fields": [
+                                {
+                                    "name": "startDateTime",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "endDateTime",
+                                    "type": "string*"
+                                }
+                            ]
+                        },
+                        "default": {}
+                    },
+                    {
+                        "name": "status",
+                        "type": "string*",
+                        "default": "initialized"
+                    }
+                ]
+            },
+            "default": {}
+        }
+    ]
+}

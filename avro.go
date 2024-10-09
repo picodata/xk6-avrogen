@@ -80,7 +80,7 @@ func (as *AvroSchema) GenerateValue() any {
 func generateValue(schema avro.Schema, nested bool) any {
 	switch schema.Type() {
 	case avro.Null:
-		panic("avro.Null")
+        panic("avro.Null")
 		// return nil
 	case avro.Boolean:
 		return true

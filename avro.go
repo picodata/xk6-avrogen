@@ -16,12 +16,14 @@ import (
 
 type builderFunc = func(map[string]any, string, bool) any
 
-var primitiveBuilder builderFunc
-var recordBuilder builderFunc
-var arrayBuilder builderFunc
-var mapBuilder builderFunc
-var unionBuilder builderFunc
-var builders map[string]builderFunc
+var (
+	primitiveBuilder builderFunc
+	recordBuilder    builderFunc
+	arrayBuilder     builderFunc
+	mapBuilder       builderFunc
+	unionBuilder     builderFunc
+	builders         map[string]builderFunc
+)
 
 func init() {
 	modules.Register("k6/x/avrogen", new(Avro))
@@ -60,11 +62,13 @@ type AvroSchema struct {
 func (*Avro) XNew(schema any) any {
 	sh, err := json.Marshal(schema)
 	if err != nil {
-		return nil
+		panic(err)
+		// return nil
 	}
 	s, err := avro.Parse(string(sh))
 	if err != nil {
-		return nil
+		panic(err)
+		// return nil
 	}
 	return &AvroSchema{schema: s}
 }
@@ -76,7 +80,8 @@ func (as *AvroSchema) GenerateValue() any {
 func generateValue(schema avro.Schema, nested bool) any {
 	switch schema.Type() {
 	case avro.Null:
-		return nil
+		panic("avro.Null")
+		// return nil
 	case avro.Boolean:
 		return true
 	case avro.Int:
@@ -118,7 +123,11 @@ func generateValue(schema avro.Schema, nested bool) any {
 		return schema.Symbols()[0]
 	case avro.Union:
 		schema := schema.(*avro.UnionSchema)
-		return generateValue(schema.Types()[rand.Intn(len(schema.Types()))], false)
+		nested_type := schema.Types()[0]
+		if nested_type.Type() == "null" {
+			nested_type = schema.Types()[1]
+		}
+		return generateValue(nested_type, false)
 	case avro.Record:
 		schema := schema.(*avro.RecordSchema)
 		fields := map[string]any{}
